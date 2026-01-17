@@ -111,6 +111,20 @@ Après modification des modèles, exécutez :
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
+### Configuration VS Code
+
+Le projet inclut des paramètres VS Code (`.vscode/settings.json`) qui masquent automatiquement :
+- Les fichiers de build et cache (`.dart_tool`, `build/`)
+- Les fichiers IDE (`.idea/`, `*.iml`)
+- Les fichiers temporaires (`tmpclaude-*`, `.tmp/`)
+- Les métadonnées (`.metadata`, `devtools_options.yaml`)
+
+### Structure des dossiers ignorés
+
+- `.tmp/` - Fichiers temporaires (ignoré par Git et masqué dans VS Code)
+- `.dart_tool/` - Cache Dart/Flutter
+- `build/` - Fichiers compilés
+
 ### Tests
 
 ```bash

@@ -125,6 +125,7 @@ app.*.symbols
 
 # Temp files
 tmpclaude-*
+.tmp/
 
 # DevTools
 devtools_options.yaml
