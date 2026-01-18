@@ -25,5 +25,6 @@
     "**/.dart_tool": true,
     "**/tmpclaude-*": true,
     "**/.tmp": true
-  }
+  },
+  "cmake.ignoreCMakeListsMissing": true
 }
