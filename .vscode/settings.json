@@ -1,0 +1,30 @@
+{
+  "files.exclude": {
+    "**/.git": true,
+    "**/.dart_tool": true,
+    "**/.idea": true,
+    "**/.metadata": true,
+    "**/.flutter-plugins": true,
+    "**/.flutter-plugins-dependencies": true,
+    "**/build": true,
+    "**/*.iml": true,
+    "**/devtools_options.yaml": true,
+    "**/tmpclaude-*": true,
+    "**/.tmp": true
+  },
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/**": true,
+    "**/.dart_tool/**": true,
+    "**/build/**": true,
+    "**/.tmp/**": true
+  },
+  "search.exclude": {
+    "**/build": true,
+    "**/.dart_tool": true,
+    "**/tmpclaude-*": true,
+    "**/.tmp": true
+  },
+  "cmake.ignoreCMakeListsMissing": true
+}
