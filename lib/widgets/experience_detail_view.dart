@@ -98,7 +98,6 @@ class _ExperienceDetailViewState extends ConsumerState<ExperienceDetailView> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 24),
               Expanded(
                 child: Row(
@@ -106,32 +105,60 @@ class _ExperienceDetailViewState extends ConsumerState<ExperienceDetailView> {
                     SizedBox(
                         width: _leftPanelWidth,
                         child: Container(
-                          child: experience.days.isEmpty
-                              ? const Center(
-                                  child: Text(
-                                    'Aucun jours',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Color.fromARGB(255, 156, 63, 63),
-                                    ),
-                                  ),
+                            padding: const EdgeInsets.all(6),
+                            child: Column(
+                              children: [
+                                Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        'Journées',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.black
+                                              .withValues(alpha: 0.3),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 50,
+                                        child: IconButton(
+                                          icon: const Icon(Icons.add),
+                                          onPressed: () {},
+                                        ),
+                                      ),
+                                    ]),
+                                Container(
+                                  child: experience.days.isEmpty
+                                      ? const Center(
+                                          child: Text(
+                                            'Aucun jours',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Color.fromARGB(
+                                                  255, 156, 63, 63),
+                                            ),
+                                          ),
+                                        )
+                                      : ListView.builder(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                          itemCount: experience.days.length,
+                                          itemBuilder: (context, index) {
+                                            final day = experience.days[index];
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                  bottom: 16),
+                                              child: DayCard(
+                                                  day: day, onTap: () {}),
+                                            );
+                                          },
+                                        ),
                                 )
-                              : ListView.builder(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
-                                  itemCount: experience.days.length,
-                                  itemBuilder: (context, index) {
-                                    final day = experience.days[index];
-                                    return Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 16),
-                                      child: DayCard(day: day, onTap: () {
-                                      }),
-                                    );
-                                  },
-                                ),
-                        )),
+                              ],
+                            ))),
                     MouseRegion(
                       cursor: SystemMouseCursors.resizeColumn,
                       child: GestureDetector(
