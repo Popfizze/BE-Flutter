@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../providers/experience_provider.dart';
 import '../widgets/experience_card.dart';
 import '../widgets/add_experience_form.dart';
-import 'experience_detail_page.dart';
+import '../widgets/experience_detail_view.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -16,6 +16,7 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   bool _showForm = false;
   double _leftPanelWidth = 450.0;
+  int? _selectedExperienceIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -104,15 +105,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                                             index: index,
                                             experience: experience,
                                             onView: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ExperienceDetailPage(
-                                                          experienceIndex:
-                                                              index),
-                                                ),
-                                              );
+                                              setState(() {
+                                                _selectedExperienceIndex =
+                                                    index;
+                                              });
                                             },
                                             onDelete: () {
                                               _showDeleteConfirmation(
@@ -153,12 +149,19 @@ class _HomePageState extends ConsumerState<HomePage> {
                   Expanded(
                     child: Container(
                       key: const Key('rightPanel'),
-                      color: const Color.fromRGBO(230, 230, 230, 0.8),
-                      child: const Column(children: [
-                        Text(
-                          'Right panel',
-                        ),
-                      ]),
+                      color: const Color(0XDEDEDEFF),
+                      child: _selectedExperienceIndex != null
+                          ? ExperienceDetailView(
+                              experienceIndex: _selectedExperienceIndex!,
+                              // Force rebuild when selection changes
+                              key: ValueKey(_selectedExperienceIndex),
+                            )
+                          : const Center(
+                              child: Text(
+                                'Sélectionnez une expérience pour voir les détails',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            ),
                     ),
                   )
                 ],
