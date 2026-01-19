@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../providers/experience_provider.dart';
 import '../widgets/experience_card.dart';
 import '../widgets/add_experience_form.dart';
@@ -14,118 +15,155 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   bool _showForm = false;
+  double _leftPanelWidth = 450.0;
 
   @override
   Widget build(BuildContext context) {
     final experiences = ref.watch(experienceProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      body: Column(
-        children: [
-          // Header
-          Container(
-            color: Colors.transparent,
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 24),
-                const Text(
-                  'Experience',
-                  style: TextStyle(
-                    fontSize: 23,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Voici toutes vos expériences',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[800],
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // Liste des expériences
-          Expanded(
-            child: experiences.isEmpty
-                ? Center(
-                    child: Text(
-                      'Aucune expérience\nCliquez sur "Créer une expérience"',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.grey[600],
+      backgroundColor: const Color(0x9092AAFF),
+      body: SafeArea(
+        child: Container(
+            padding: const EdgeInsets.only(top: 10, left: 25),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  SizedBox(
+                      width: _leftPanelWidth,
+                      key: const Key("leftPanel"),
+                      child: Container(
+                        padding: const EdgeInsets.all(6),
+                        color: const Color.fromRGBO(222, 222, 222, 0.8),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                                key: const Key('header'),
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text(
+                                    'Experiences',
+                                    style: GoogleFonts.dosis(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w700,
+                                      color:
+                                          Colors.black.withValues(alpha: 0.3),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 50,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.add),
+                                      onPressed: () {
+                                        setState(() {
+                                          _showForm = !_showForm;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ]),
+                            if (_showForm) ...[
+                              const SizedBox(height: 16),
+                              AddExperienceForm(
+                                onSubmit: () {
+                                  setState(() {
+                                    _showForm = false;
+                                  });
+                                },
+                              ),
+                            ],
+                            const SizedBox(height: 15),
+                            Expanded(
+                              key: const Key('experienceList'),
+                              child: experiences.isEmpty
+                                  ? const Center(
+                                      child: Text(
+                                        'Aucune expérience',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color:
+                                              Color.fromARGB(255, 156, 63, 63),
+                                        ),
+                                      ),
+                                    )
+                                  : ListView.builder(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16),
+                                      itemCount: experiences.length,
+                                      itemBuilder: (context, index) {
+                                        final experience = experiences[index];
+                                        return Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 16),
+                                          child: ExperienceCard(
+                                            index: index,
+                                            experience: experience,
+                                            onView: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ExperienceDetailPage(
+                                                          experienceIndex:
+                                                              index),
+                                                ),
+                                              );
+                                            },
+                                            onDelete: () {
+                                              _showDeleteConfirmation(
+                                                  context, index);
+                                            },
+                                            onEditTitle: () {
+                                              _showEditTitleDialog(
+                                                  context, index);
+                                            },
+                                          ),
+                                        );
+                                      },
+                                    ),
+                            ),
+                          ],
+                        ),
+                      )),
+                  MouseRegion(
+                    cursor: SystemMouseCursors.resizeColumn,
+                    child: GestureDetector(
+                      onHorizontalDragUpdate: (details) {
+                        setState(() {
+                          _leftPanelWidth += details.delta.dx;
+                          if (_leftPanelWidth < 200) _leftPanelWidth = 200;
+                        });
+                      },
+                      child: Container(
+                        width: 10,
+                        color: const Color.fromRGBO(230, 230, 230, 0.8),
+                        alignment: Alignment.center,
+                        child: Container(
+                          width: 0,
+                          color: const Color.fromRGBO(230, 230, 230, 0.8),
+                        ),
                       ),
                     ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: experiences.length,
-                    itemBuilder: (context, index) {
-                      final experience = experiences[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child: ExperienceCard(
-                          index: index,
-                          experience: experience,
-                          onView: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    ExperienceDetailPage(experienceIndex: index),
-                              ),
-                            );
-                          },
-                          onDelete: () {
-                            _showDeleteConfirmation(context, index);
-                          },
-                          onEditTitle: () {
-                            _showEditTitleDialog(context, index);
-                          },
+                  ),
+                  Expanded(
+                    child: Container(
+                      key: const Key('rightPanel'),
+                      color: const Color.fromRGBO(230, 230, 230, 0.8),
+                      child: const Column(children: [
+                        Text(
+                          'Right panel',
                         ),
-                      );
-                    },
-                  ),
-          ),
-
-          // Footer avec bouton et formulaire
-          Container(
-            color: Colors.transparent,
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _showForm = !_showForm;
-                      });
-                    },
-                    child: const Text('Créer une expérience'),
-                  ),
-                ),
-                if (_showForm) ...[
-                  const SizedBox(height: 16),
-                  AddExperienceForm(
-                    onSubmit: () {
-                      setState(() {
-                        _showForm = false;
-                      });
-                    },
-                  ),
+                      ]),
+                    ),
+                  )
                 ],
-              ],
-            ),
-          ),
-        ],
+              ),
+            )),
       ),
     );
   }
@@ -135,7 +173,8 @@ class _HomePageState extends ConsumerState<HomePage> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Supprimer l\'expérience'),
-        content: const Text('Êtes-vous sûr de vouloir supprimer cette expérience ?'),
+        content:
+            const Text('Êtes-vous sûr de vouloir supprimer cette expérience ?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
