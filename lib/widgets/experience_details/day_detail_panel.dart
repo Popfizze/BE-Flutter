@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../../models/experience.dart';
 
 class DayDetailPanel extends StatelessWidget {
@@ -14,8 +13,6 @@ class DayDetailPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat('dd/MM');
-
     return Container(
       color: const Color(0XDEDEDEFF),
       child: dayIndex == null
