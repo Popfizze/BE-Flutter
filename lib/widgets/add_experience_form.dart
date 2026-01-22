@@ -35,131 +35,129 @@ class _AddExperienceFormState extends ConsumerState<AddExperienceForm> {
     final dateFormat = DateFormat('dd/MM/yyyy');
 
     return Form(
-      key: _formKey,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.grey[300]!),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Titre
-            TextFormField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Titre de l\'expérience',
-                hintText: 'Titre de l\'expérience...',
-                border: OutlineInputBorder(),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Veuillez entrer un titre';
-                }
-                return null;
-              },
-            ),
-
-            const SizedBox(height: 12),
-
-            // Dates
-            Row(
+        key: _formKey,
+        child: Row(children: [
+          SizedBox(
+            width: 350,
+            child: Column(
+              mainAxisSize: MainAxisSize.min, // Important pour le Dialog
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Début:', style: TextStyle(fontSize: 12)),
-                      const SizedBox(height: 4),
-                      InkWell(
-                        onTap: () => _selectStartDate(context),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey[400]!),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(dateFormat.format(_startDate)),
-                              ),
-                              const Icon(Icons.calendar_today, size: 18),
-                            ],
+                TextFormField(
+                  controller: _titleController,
+                  decoration: const InputDecoration(
+                    labelText: 'Titre de l\'expérience',
+                    hintText: 'Ex: Développeur Flutter',
+                    border: OutlineInputBorder(),
+                    isDense: true,
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Veuillez entrer un titre';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 24),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Commence',
+                            style: TextStyle(fontSize: 12, color: Colors.grey)),
+                        const SizedBox(height: 4),
+                        InkWell(
+                          onTap: () => _selectStartDate(context),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 12),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(dateFormat.format(_startDate)),
+                                const Icon(Icons.calendar_today, size: 16),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('Fin:', style: TextStyle(fontSize: 12)),
-                      const SizedBox(height: 4),
-                      InkWell(
-                        onTap: () => _selectEndDate(context),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey[400]!),
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(dateFormat.format(_endDate)),
-                              ),
-                              const Icon(Icons.calendar_today, size: 18),
-                            ],
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Termine',
+                            style: TextStyle(fontSize: 12, color: Colors.grey)),
+                        const SizedBox(height: 4),
+                        InkWell(
+                          onTap: () => _selectEndDate(context),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 12),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(dateFormat.format(_endDate)),
+                                const Icon(Icons.calendar_today, size: 16),
+                              ],
+                            ),
                           ),
                         ),
+                      ],
+                    ),
+                    const SizedBox(height: 24),
+                    TextFormField(
+                      controller: _contractController,
+                      decoration: const InputDecoration(
+                        labelText: 'Type de contrat',
+                        hintText: 'Ex: CDI, Freelance...',
+                        border: OutlineInputBorder(),
+                        isDense: true,
                       ),
-                    ],
-                  ),
-                ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Veuillez entrer un contrat';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('Annuler',
+                              style: TextStyle(color: Colors.grey)),
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton(
+                          onPressed: _submitForm,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blueAccent,
+                            foregroundColor: Colors.white,
+                          ),
+                          child: const Text('Ajouter'),
+                        ),
+                      ],
+                    ),
+                  ],
+                )
               ],
             ),
-
-            const SizedBox(height: 12),
-
-            // Contrat
-            TextFormField(
-              controller: _contractController,
-              decoration: const InputDecoration(
-                labelText: 'Contrat',
-                hintText: 'Contrat...',
-                border: OutlineInputBorder(),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Veuillez entrer un contrat';
-                }
-                return null;
-              },
-            ),
-
-            const SizedBox(height: 16),
-
-            // Bouton Ajouter
-            ElevatedButton(
-              onPressed: _submitForm,
-              child: const Text('Ajouter'),
-            ),
-          ],
-        ),
-      ),
-    );
+          ),
+          const Expanded(child: Text("")),
+        ]));
   }
 
   Future<void> _selectStartDate(BuildContext context) async {

@@ -1,3 +1,4 @@
+import 'package:be_flutter/widgets/add_day_form.dart';
 import 'package:be_flutter/widgets/day_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,18 +19,7 @@ class ExperienceDetailView extends ConsumerStatefulWidget {
 }
 
 class _ExperienceDetailViewState extends ConsumerState<ExperienceDetailView> {
-  DateTime _selectedDate = DateTime.now();
-  int _selectedRating = 4;
-  bool _contractRespected = false;
-  double _leftPanelWidth = 100.0;
-
-  final List<String> _ratingLabels = [
-    'Très mauvaise (1)',
-    'Mauvaise (2)',
-    'Neutre (3)',
-    'Bonne (4)',
-    'Très bonne (5)',
-  ];
+  double _leftPanelWidth = 125.0;
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +115,28 @@ class _ExperienceDetailViewState extends ConsumerState<ExperienceDetailView> {
                                         width: 50,
                                         child: IconButton(
                                           icon: const Icon(Icons.add),
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  title: const Text(
+                                                      "Ajouter une expérience"),
+                                                  content: SizedBox(
+                                                    width: 550,
+                                                    child: AddDayForm(
+                                                      onSubmit: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                      experienceIndex: widget
+                                                          .experienceIndex,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
                                         ),
                                       ),
                                     ]),
@@ -192,37 +203,6 @@ class _ExperienceDetailViewState extends ConsumerState<ExperienceDetailView> {
           ),
         ),
       ],
-    );
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
-    }
-  }
-
-  void _rateDay() {
-    ref.read(experienceProvider.notifier).rateExperienceDay(
-          experienceIndex: widget.experienceIndex,
-          rating: _selectedRating,
-          date: _selectedDate,
-          note: ' ',
-          contractRespected: _contractRespected,
-        );
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Journée notée avec succès'),
-        duration: Duration(seconds: 2),
-      ),
     );
   }
 

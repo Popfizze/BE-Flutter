@@ -146,6 +146,12 @@ class ExperienceNotifier extends StateNotifier<List<Experience>> {
     await _saveExperiences();
   }
 
+  /// Clear all experiences
+  Future<void> clearAllExperiences() async {
+    state = [];
+    await _saveExperiences();
+  }
+
   /// Get experience at index
   Experience? getExperience(int index) {
     if (index < 0 || index >= state.length) return null;

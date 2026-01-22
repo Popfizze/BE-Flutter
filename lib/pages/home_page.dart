@@ -14,7 +14,7 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
-  bool _showForm = false;
+  final bool _showForm = false;
   double _leftPanelWidth = 450.0;
   int? _selectedExperienceIndex;
 
@@ -58,25 +58,71 @@ class _HomePageState extends ConsumerState<HomePage> {
                                   SizedBox(
                                     width: 50,
                                     child: IconButton(
+                                      icon: const Icon(Icons.delete_forever,
+                                          color: Colors.redAccent),
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            title: const Text(
+                                                'Tout supprimer ?'),
+                                            content: const Text(
+                                                'Cette action est irréversible. Toutes les expériences seront perdues.'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context),
+                                                child: const Text('Annuler'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  ref
+                                                      .read(experienceProvider
+                                                          .notifier)
+                                                      .clearAllExperiences();
+                                                  setState(() {
+                                                    _selectedExperienceIndex =
+                                                        null;
+                                                  });
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const Text(
+                                                    'Tout supprimer',
+                                                    style: TextStyle(
+                                                        color: Colors.red)),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 50,
+                                    child: IconButton(
                                       icon: const Icon(Icons.add),
                                       onPressed: () {
-                                        setState(() {
-                                          _showForm = !_showForm;
-                                        });
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title: const Text(
+                                                  "Ajouter une expérience"),
+                                              content: SizedBox(
+                                                width: 400,
+                                                child: AddExperienceForm(
+                                                  onSubmit: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
                                       },
                                     ),
                                   ),
                                 ]),
-                            if (_showForm) ...[
-                              const SizedBox(height: 16),
-                              AddExperienceForm(
-                                onSubmit: () {
-                                  setState(() {
-                                    _showForm = false;
-                                  });
-                                },
-                              ),
-                            ],
                             const SizedBox(height: 15),
                             Expanded(
                               key: const Key('experienceList'),

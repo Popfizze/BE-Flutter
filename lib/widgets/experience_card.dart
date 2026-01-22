@@ -41,7 +41,8 @@ class ExperienceCard extends StatelessWidget {
               CircleAvatar(
                 backgroundColor: Colors.grey,
                 child: Text(
-                  experience.title.substring(0, 1),
+                  // experience.title.substring(0, 1),
+                  '${index + 1}',
                   style: const TextStyle(color: Colors.white),
                 ),
               ),
