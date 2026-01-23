@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/experience.dart';
+import '../../providers/experience_provider.dart';
 import '../add_day_form.dart';
 import '../day_card.dart';
 
-class DayListPanel extends StatelessWidget {
+class DayListPanel extends ConsumerWidget {
   final double width;
   final Experience experience;
   final int experienceIndex;
@@ -17,35 +19,64 @@ class DayListPanel extends StatelessWidget {
     required this.onDaySelected,
   });
 
+  void _showDeleteDayConfirmation(
+      BuildContext context, WidgetRef ref, int dayIndex) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Supprimer la journée'),
+        content:
+            const Text('Êtes-vous sûr de vouloir supprimer cette journée ?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Annuler'),
+          ),
+          TextButton(
+            onPressed: () {
+              ref
+                  .read(experienceProvider.notifier)
+                  .deleteDay(experienceIndex, dayIndex);
+              Navigator.pop(context);
+            },
+            child: const Text('Supprimer', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SizedBox(
       width: width,
       child: Container(
         padding: const EdgeInsets.all(6),
+        color: const Color.fromRGBO(213, 213, 218, 1.0),
         child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Journées',
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 14,
                     fontWeight: FontWeight.w700,
-                    color: Colors.black.withValues(alpha: 0.3),
+                    color: Color.fromRGBO(173, 172, 176, 1.0),
                   ),
                 ),
                 SizedBox(
                   width: 50,
                   child: IconButton(
                     icon: const Icon(Icons.add),
+                    color: const Color.fromRGBO(173, 172, 176, 1.0),
                     onPressed: () {
                       showDialog(
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: const Text("Ajouter une expérience"),
+                            title: const Text("Ajouter un jour"),
                             content: SizedBox(
                               width: 550,
                               child: AddDayForm(
@@ -62,6 +93,9 @@ class DayListPanel extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+            const SizedBox(
+              height: 15,
             ),
             Expanded(
               child: Container(
@@ -84,10 +118,13 @@ class DayListPanel extends StatelessWidget {
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 16),
                             child: DayCard(
+                              index: index,
                               day: day,
                               onTap: () {
                                 onDaySelected(index);
                               },
+                              onDelete: () => _showDeleteDayConfirmation(
+                                  context, ref, index),
                             ),
                           );
                         },

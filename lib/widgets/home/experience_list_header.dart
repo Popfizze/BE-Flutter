@@ -5,12 +5,7 @@ import '../../providers/experience_provider.dart';
 import '../add_experience_form.dart';
 
 class ExperienceListHeader extends ConsumerWidget {
-  final VoidCallback onClearAll;
-
-  const ExperienceListHeader({
-    super.key,
-    required this.onClearAll,
-  });
+  const ExperienceListHeader({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,39 +22,6 @@ class ExperienceListHeader extends ConsumerWidget {
         ),
         SizedBox(
           width: 50,
-          child: IconButton(
-            icon: const Icon(Icons.delete_forever, color: Colors.redAccent),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Tout supprimer ?'),
-                  content: const Text(
-                      'Cette action est irréversible. Toutes les expériences seront perdues.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Annuler'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        ref
-                            .read(experienceProvider.notifier)
-                            .clearAllExperiences();
-                        onClearAll();
-                        Navigator.pop(context);
-                      },
-                      child: const Text('Tout supprimer',
-                          style: TextStyle(color: Colors.red)),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-        SizedBox(
-          width: 15,
           height: 40,
           child: IconButton(
             color: Colors.black.withValues(alpha: 0.4),
@@ -69,10 +31,12 @@ class ExperienceListHeader extends ConsumerWidget {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
                     title: const Text("Ajouter une expérience"),
                     content: SizedBox(
-                      width: 15,
-                      height: 40,
+                      width: 400,
                       child: AddExperienceForm(
                         onSubmit: () {
                           Navigator.of(context).pop();

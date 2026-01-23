@@ -7,10 +7,8 @@ class ExperienceGraph extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 200,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.grey[300]!),
-        borderRadius: BorderRadius.circular(8),
+      decoration: const BoxDecoration(
+        color: Color.fromRGBO(213, 213, 218, 1.0),
       ),
       child: Center(
         child: Text(

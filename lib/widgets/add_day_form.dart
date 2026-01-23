@@ -17,11 +17,11 @@ class AddDayForm extends ConsumerStatefulWidget {
 }
 
 enum RatingsLabels {
-  tresMauvaise('Trash', 1),
-  mauvaise('bad', 2),
-  neutre('okay', 3),
-  bonne('good', 4),
-  tresBonne('really good', 5);
+  tresMauvaise('Très mauvaise', 1),
+  mauvaise('Mauvaise', 2),
+  neutre('Neutre', 3),
+  bonne('Bonne', 4),
+  tresBonne('Très bonne', 5);
 
   final String label;
   final int value;
@@ -42,72 +42,119 @@ class _AddDayFormState extends ConsumerState<AddDayForm> {
 
   @override
   Widget build(BuildContext context) {
+    const labelWidth = 60.0;
+    const borderColor = Color.fromRGBO(105, 82, 164, 1.0);
+    const buttonColor = Color.fromRGBO(224, 221, 246, 1.0);
+
     return Form(
         key: _formKey,
-        child: Row(children: [
-          SizedBox(
-            width: 450,
-            child: Column(
-              mainAxisSize: MainAxisSize.min, // Important pour le Dialog
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    const Text('Note'),
-                    SegmentedButton<RatingsLabels>(
-                      segments: RatingsLabels.values.map((label) {
-                        return ButtonSegment<RatingsLabels>(
-                            value: label, label: Text(label.label));
+        child: SizedBox(
+          width: 350,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Note
+              Row(
+                children: [
+                  const SizedBox(
+                    width: labelWidth,
+                    child: Text('Note',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: DropdownButtonFormField<RatingsLabels>(
+                      value: _dayRating,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: const BorderSide(color: borderColor),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide:
+                              const BorderSide(color: borderColor, width: 2),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15),
+                          borderSide: const BorderSide(color: borderColor),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 8),
+                        isDense: true,
+                      ),
+                      items: RatingsLabels.values.map((label) {
+                        return DropdownMenuItem<RatingsLabels>(
+                          value: label,
+                          child: Text(label.label),
+                        );
                       }).toList(),
-                      selected: {_dayRating},
-                      onSelectionChanged: (selected) {
-                        setState(() {
-                          _dayRating = selected.first;
-                        });
+                      onChanged: (RatingsLabels? newValue) {
+                        if (newValue != null) {
+                          setState(() {
+                            _dayRating = newValue;
+                          });
+                        }
                       },
                     ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                CheckboxListTile(
-                    title: const Text('Contrat respecté'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Contrat
+              Row(
+                children: [
+                  const SizedBox(
+                    width: labelWidth,
+                    child: Text('Contrat',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  const SizedBox(width: 16),
+                  Checkbox(
                     value: _contractRespected,
+                    activeColor: borderColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
                     onChanged: (value) {
                       setState(() {
                         _contractRespected = value ?? true;
                       });
-                    }),
-                const SizedBox(height: 24),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 24),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('Annuler',
-                              style: TextStyle(color: Colors.grey)),
-                        ),
-                        const SizedBox(width: 8),
-                        ElevatedButton(
-                          onPressed: _submitForm,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent,
-                            foregroundColor: Colors.white,
-                          ),
-                          child: const Text('Ajouter'),
-                        ),
-                      ],
+                    },
+                  ),
+                  const Text('Respecté'),
+                ],
+              ),
+              const SizedBox(height: 24),
+
+              // Boutons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Annuler',
+                        style: TextStyle(color: Colors.grey)),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: _submitForm,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: buttonColor,
+                      foregroundColor: borderColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      elevation: 0,
                     ),
-                  ],
-                )
-              ],
-            ),
+                    child: const Text('Ajouter'),
+                  ),
+                ],
+              ),
+            ],
           ),
-          const Expanded(child: Text("")),
-        ]));
+        ));
   }
 
   void title() {}

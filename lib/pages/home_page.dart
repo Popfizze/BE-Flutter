@@ -12,7 +12,7 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
-  double _leftPanelWidth = 450.0;
+  double _leftPanelWidth = 220.0;
   int? _selectedExperienceIndex;
 
   @override
@@ -36,13 +36,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            ExperienceListHeader(
-                              key: const Key('headerExperienceList'),
-                              onClearAll: () {
-                                setState(() {
-                                  _selectedExperienceIndex = null;
-                                });
-                              },
+                            const ExperienceListHeader(
+                              key: Key('headerExperienceList'),
                             ),
                             const SizedBox(height: 15),
                             Expanded(
@@ -64,7 +59,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                       onHorizontalDragUpdate: (details) {
                         setState(() {
                           _leftPanelWidth += details.delta.dx;
-                          if (_leftPanelWidth < 200) _leftPanelWidth = 200;
+                          if (_leftPanelWidth < 220) _leftPanelWidth = 220;
                         });
                       },
                       child: Container(
@@ -80,7 +75,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                   Expanded(
                     child: Container(
-                      color: const Color(0XDEDEDEFF),
+                      color: const Color.fromRGBO(213, 213, 218, 1.0),
                       child: _selectedExperienceIndex != null
                           ? ExperienceDetailView(
                               experienceIndex: _selectedExperienceIndex!,

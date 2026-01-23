@@ -27,14 +27,41 @@ class ExperienceCard extends StatelessWidget {
         color: const Color.fromRGBO(221, 218, 224, 1.0),
         borderRadius: BorderRadius.circular(15),
       ),
-      child: InkWell(
-        onTap: onView,
-        borderRadius: BorderRadius.circular(15),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+      child: GestureDetector(
+        onSecondaryTapDown: (details) async {
+          final result = await showMenu(
+            context: context,
+            position: RelativeRect.fromLTRB(
+              details.globalPosition.dx,
+              details.globalPosition.dy,
+              details.globalPosition.dx,
+              details.globalPosition.dy,
+            ),
+            items: [
+              const PopupMenuItem(
+                value: 'delete',
+                child: Row(
+                  children: [
+                    Icon(Icons.delete, color: Colors.red),
+                    SizedBox(width: 8),
+                    Text('Supprimer', style: TextStyle(color: Colors.red)),
+                  ],
+                ),
+              ),
+            ],
+          );
+          if (result == 'delete') {
+            onDelete();
+          }
+        },
+        child: InkWell(
+          onTap: onView,
+          borderRadius: BorderRadius.circular(15),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
               CircleAvatar(
                 backgroundColor: const Color.fromRGBO(193, 188, 255, 1.0),
                 child: Text(
@@ -71,6 +98,7 @@ class ExperienceCard extends StatelessWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }

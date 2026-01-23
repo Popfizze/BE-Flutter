@@ -2,41 +2,88 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/day.dart';
 
+enum RatingsLabels {
+  tresMauvaise('Très mauvaise', 1),
+  mauvaise('Mauvaise', 2),
+  neutre('Neutre', 3),
+  bonne('Bonne', 4),
+  tresBonne('Très bonne', 5);
+
+  final String label;
+  final int value;
+
+  const RatingsLabels(this.label, this.value);
+}
+
 class DayCard extends StatelessWidget {
   final Day day;
   final VoidCallback? onTap;
+  final VoidCallback? onDelete;
+  final int index;
 
   const DayCard({
     super.key,
     required this.day,
     this.onTap,
+    this.onDelete,
+    required this.index,
   });
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat('dd/MM/yyyy');
+    final ratingLabel = RatingsLabels.values
+        .firstWhere((e) => e.value == day.rating,
+            orElse: () => RatingsLabels.neutre)
+        .label;
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color.fromRGBO(230, 230, 230, 0.8),
-        border: Border.all(color: Colors.grey[300]!),
+        color: const Color.fromRGBO(221, 218, 224, 1.0),
         borderRadius: BorderRadius.circular(15),
       ),
-      padding: const EdgeInsets.all(12),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(15),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+      child: GestureDetector(
+        onSecondaryTapDown: (details) async {
+          if (onDelete == null) return;
+          final result = await showMenu(
+            context: context,
+            position: RelativeRect.fromLTRB(
+              details.globalPosition.dx,
+              details.globalPosition.dy,
+              details.globalPosition.dx,
+              details.globalPosition.dy,
+            ),
+            items: [
+              const PopupMenuItem(
+                value: 'delete',
+                child: Row(
+                  children: [
+                    Icon(Icons.delete, color: Colors.red),
+                    SizedBox(width: 8),
+                    Text('Supprimer', style: TextStyle(color: Colors.red)),
+                  ],
+                ),
+              ),
+            ],
+          );
+          if (result == 'delete') {
+            onDelete!();
+          }
+        },
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(15),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
               // Rating Avatar
               CircleAvatar(
-                backgroundColor: day.contractRespected ? Colors.green : Colors.deepOrange,
+                backgroundColor: const Color.fromRGBO(193, 188, 255, 1.0),
                 child: Text(
                   day.rating.toString(),
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                  style:
+                      const TextStyle(color: Color.fromRGBO(87, 83, 141, 1.0)),
                 ),
               ),
 
@@ -48,7 +95,7 @@ class DayCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      dateFormat.format(day.date),
+                      'Jour ${index + 1} ',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -57,7 +104,15 @@ class DayCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      day.note.isNotEmpty ? day.note : 'Aucune note',
+                      'Note:  $ratingLabel',
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      day.contractRespected
+                          ? 'Contrat: Respecté'
+                          : 'Contrat: Non respecté',
                       style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -65,7 +120,7 @@ class DayCard extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               // Indicator for invalid days
               if (!day.valid)
                 const Padding(
@@ -73,6 +128,7 @@ class DayCard extends StatelessWidget {
                   child: Icon(Icons.block, color: Colors.red),
                 ),
             ],
+          ),
           ),
         ),
       ),

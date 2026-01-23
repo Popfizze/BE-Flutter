@@ -13,25 +13,34 @@ class ExperienceHeader extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(bottom: BorderSide(color: Colors.grey[300]!)),
-      ),
+      color: const Color.fromRGBO(213, 213, 218, 1.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            experience.title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          Text(
-            '${dateFormat.format(experience.startDate)} - ${dateFormat.format(experience.endDate)}',
-            style: const TextStyle(fontSize: 12),
-          ),
-          const SizedBox(height: 4),
+          Expanded(
+              child: Row(
+            children: [
+              Text(
+                experience.title,
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(width: 20),
+              Text(
+                '${dateFormat.format(experience.startDate)} - ${dateFormat.format(experience.endDate)}',
+                style: const TextStyle(
+                  fontSize: 17,
+                  color: Color.fromRGBO(173, 172, 176, 1.0),
+                ),
+              ),
+            ],
+          )),
           Text(
             'Contrat: ${experience.contract}',
-            style: const TextStyle(fontSize: 12),
+            style: const TextStyle(
+              fontSize: 17,
+              color: Color.fromRGBO(173, 172, 176, 1.0),
+            ),
           ),
         ],
       ),

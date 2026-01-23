@@ -20,7 +20,8 @@ class ExperienceDetailView extends ConsumerStatefulWidget {
 }
 
 class _ExperienceDetailViewState extends ConsumerState<ExperienceDetailView> {
-  double _leftPanelWidth = 125.0;
+  double _leftPanelWidth = 360;
+  double _bottomPanelHeight = 380;
   int? _dayIndex;
 
   @override
@@ -45,50 +46,79 @@ class _ExperienceDetailViewState extends ConsumerState<ExperienceDetailView> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const ExperienceGraph(),
-              const SizedBox(height: 24),
-              Expanded(
-                child: Row(
-                  children: [
-                    DayListPanel(
-                      width: _leftPanelWidth,
-                      experience: experience,
-                      experienceIndex: widget.experienceIndex,
-                      onDaySelected: (index) {
-                        setState(() {
-                          _dayIndex = index;
-                        });
-                      },
+              const Expanded(
+                child: ExperienceGraph(),
+              ),
+              MouseRegion(
+                cursor: SystemMouseCursors.resizeRow,
+                child: GestureDetector(
+                  onVerticalDragUpdate: (details) {
+                    setState(() {
+                      _bottomPanelHeight -= details.delta.dy;
+                      if (_bottomPanelHeight < 240) _bottomPanelHeight = 240;
+                    });
+                  },
+                  child: Container(
+                    height: 5,
+                    color: const Color.fromRGBO(213, 213, 218, 1.0),
+                    alignment: Alignment.center,
+                    child: Container(
+                      height: 1,
+                      color: const Color.fromARGB(255, 167, 167, 167),
                     ),
-                    MouseRegion(
-                      cursor: SystemMouseCursors.resizeColumn,
-                      child: GestureDetector(
-                        onHorizontalDragUpdate: (details) {
-                          setState(() {
-                            _leftPanelWidth += details.delta.dx;
-                            if (_leftPanelWidth < 200) _leftPanelWidth = 200;
-                          });
-                        },
-                        child: Container(
-                          width: 10,
-                          color: const Color.fromRGBO(230, 230, 230, 0.8),
-                          alignment: Alignment.center,
-                          child: Container(
-                            width: 0,
-                            color: const Color.fromRGBO(230, 230, 230, 0.8),
+                  ),
+                ),
+              ),
+              SizedBox(
+                  height: _bottomPanelHeight,
+                  child: Container(
+                    color: const Color.fromRGBO(206, 206, 211, 1.0),
+                    child: Row(
+                      children: [
+                        DayListPanel(
+                          width: _leftPanelWidth,
+                          experience: experience,
+                          experienceIndex: widget.experienceIndex,
+                          onDaySelected: (index) {
+                            setState(() {
+                              _dayIndex = index;
+                            });
+                          },
+                        ),
+                        MouseRegion(
+                          cursor: SystemMouseCursors.resizeColumn,
+                          child: GestureDetector(
+                            onHorizontalDragUpdate: (details) {
+                              setState(() {
+                                _leftPanelWidth += details.delta.dx;
+                                if (_leftPanelWidth < 360) {
+                                  _leftPanelWidth = 360;
+                                }
+                              });
+                            },
+                            child: Container(
+                              width: 5,
+                              color: const Color.fromRGBO(213, 213, 218, 1.0),
+                              alignment: Alignment.center,
+                              child: Container(
+                                width: 1,
+                                color: const Color.fromARGB(255, 175, 175, 175),
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        Expanded(
+                          child: _dayIndex == null
+                              ? const SizedBox()
+                              : DayDetailPanel(
+                                  dayIndex: _dayIndex!,
+                                  experience: experience,
+                                  experienceIndex: widget.experienceIndex,
+                                ),
+                        ),
+                      ],
                     ),
-                    Expanded(
-                      child: DayDetailPanel(
-                        dayIndex: _dayIndex,
-                        experience: experience,
-                      ),
-                    ),
-                  ],
-                ),
-              )
+                  ))
             ],
           ),
         ),
