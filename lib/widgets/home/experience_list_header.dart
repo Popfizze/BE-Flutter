@@ -22,7 +22,7 @@ class ExperienceListHeader extends ConsumerWidget {
           style: GoogleFonts.dosis(
             fontSize: 15,
             fontWeight: FontWeight.w700,
-            color: Colors.black.withValues(alpha: 0.3),
+            color: Colors.black.withValues(alpha: 0.4),
           ),
         ),
         SizedBox(
@@ -59,8 +59,10 @@ class ExperienceListHeader extends ConsumerWidget {
           ),
         ),
         SizedBox(
-          width: 50,
+          width: 15,
+          height: 40,
           child: IconButton(
+            color: Colors.black.withValues(alpha: 0.4),
             icon: const Icon(Icons.add),
             onPressed: () {
               showDialog(
@@ -69,7 +71,8 @@ class ExperienceListHeader extends ConsumerWidget {
                   return AlertDialog(
                     title: const Text("Ajouter une expérience"),
                     content: SizedBox(
-                      width: 400,
+                      width: 15,
+                      height: 40,
                       child: AddExperienceForm(
                         onSubmit: () {
                           Navigator.of(context).pop();

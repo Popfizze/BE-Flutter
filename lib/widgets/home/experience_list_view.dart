@@ -17,14 +17,7 @@ class ExperienceListView extends ConsumerWidget {
 
     if (experiences.isEmpty) {
       return const Center(
-        child: Text(
-          'Aucune expérience',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 16,
-            color: Color.fromARGB(255, 156, 63, 63),
-          ),
-        ),
+        child: Text(''),
       );
     }
 

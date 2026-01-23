@@ -18,9 +18,9 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   Widget build(BuildContext context) {
     // Note: 'experiences' used to be watched here, but now it is watched inside ExperienceListView
-    
+
     return Scaffold(
-      backgroundColor: const Color(0x9092AAFF),
+      backgroundColor: const Color.fromRGBO(144, 146, 170, 1.0),
       body: SafeArea(
         child: Container(
             padding: const EdgeInsets.only(top: 10, left: 25),
@@ -32,8 +32,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   SizedBox(
                       width: _leftPanelWidth,
                       child: Container(
-                        padding: const EdgeInsets.all(6),
-                        color: const Color.fromRGBO(222, 222, 222, 0.8),
+                        color: const Color.fromRGBO(206, 206, 211, 1.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -69,12 +68,12 @@ class _HomePageState extends ConsumerState<HomePage> {
                         });
                       },
                       child: Container(
-                        width: 10,
-                        color: const Color.fromRGBO(230, 230, 230, 0.8),
+                        width: 5,
+                        color: const Color.fromRGBO(206, 206, 211, 1.0),
                         alignment: Alignment.center,
                         child: Container(
-                          width: 0,
-                          color: const Color.fromRGBO(230, 230, 230, 0.8),
+                          width: 1,
+                          color: const Color.fromRGBO(206, 206, 211, 1.0),
                         ),
                       ),
                     ),
@@ -90,7 +89,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                             )
                           : const Center(
                               child: Text(
-                                'Sélectionnez une expérience pour voir les détails',
+                                '',
                                 style: TextStyle(color: Colors.grey),
                               ),
                             ),

@@ -20,15 +20,13 @@ class ExperienceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat('dd/MM');
+    final dateFormat = DateFormat('d MMM', 'fr_FR');
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color.fromRGBO(230, 230, 230, 0.8),
-        border: Border.all(color: Colors.grey[300]!),
+        color: const Color.fromRGBO(221, 218, 224, 1.0),
         borderRadius: BorderRadius.circular(15),
       ),
-      padding: const EdgeInsets.all(12),
       child: InkWell(
         onTap: onView,
         borderRadius: BorderRadius.circular(15),
@@ -37,13 +35,13 @@ class ExperienceCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Titre avec bouton d'édition
               CircleAvatar(
-                backgroundColor: Colors.grey,
+                backgroundColor: const Color.fromRGBO(193, 188, 255, 1.0),
                 child: Text(
                   // experience.title.substring(0, 1),
                   '${index + 1}',
-                  style: const TextStyle(color: Colors.white),
+                  style:
+                      const TextStyle(color: Color.fromRGBO(101, 97, 157, 1.0)),
                 ),
               ),
 
