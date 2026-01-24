@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import '../models/experience.dart';
+import '../models/day.dart';
+import '../models/ratings_labels.dart';
 
-class ExperienceCard extends StatelessWidget {
-  static final DateFormat _dateFormat = DateFormat('d MMM', 'fr_FR');
-
+class DayCard extends StatelessWidget {
+  final Day day;
+  final VoidCallback? onTap;
+  final VoidCallback? onDelete;
   final int index;
-  final Experience experience;
-  final VoidCallback onView;
-  final VoidCallback onDelete;
-  final VoidCallback onEditTitle;
 
-  const ExperienceCard({
+  const DayCard({
     super.key,
+    required this.day,
+    this.onTap,
+    this.onDelete,
     required this.index,
-    required this.experience,
-    required this.onView,
-    required this.onDelete,
-    required this.onEditTitle,
   });
 
   @override
   Widget build(BuildContext context) {
+    final ratingLabel = RatingsLabels.values
+        .firstWhere((e) => e.value == day.rating,
+            orElse: () => RatingsLabels.neutre)
+        .label;
 
     return Container(
       decoration: BoxDecoration(
@@ -30,6 +30,7 @@ class ExperienceCard extends StatelessWidget {
       ),
       child: GestureDetector(
         onSecondaryTapDown: (details) async {
+          if (onDelete == null) return;
           final result = await showMenu(
             context: context,
             position: RelativeRect.fromLTRB(
@@ -52,24 +53,24 @@ class ExperienceCard extends StatelessWidget {
             ],
           );
           if (result == 'delete') {
-            onDelete();
+            onDelete!();
           }
         },
         child: InkWell(
-          onTap: onView,
+          onTap: onTap,
           borderRadius: BorderRadius.circular(15),
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+              // Rating Avatar
               CircleAvatar(
                 backgroundColor: const Color.fromRGBO(193, 188, 255, 1.0),
                 child: Text(
-                  // experience.title.substring(0, 1),
-                  '${index + 1}',
+                  day.rating.toString(),
                   style:
-                      const TextStyle(color: Color.fromRGBO(101, 97, 157, 1.0)),
+                      const TextStyle(color: Color.fromRGBO(87, 83, 141, 1.0)),
                 ),
               ),
 
@@ -81,7 +82,7 @@ class ExperienceCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      experience.title,
+                      'Jour ${index + 1} ',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -90,16 +91,33 @@ class ExperienceCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${_dateFormat.format(experience.startDate)} - ${_dateFormat.format(experience.endDate)}',
+                      'Note:  $ratingLabel',
                       style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      day.contractRespected
+                          ? 'Contrat: Respecté'
+                          : 'Contrat: Non respecté',
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
+
+              // Indicator for invalid days
+              if (!day.valid)
+                const Padding(
+                  padding: EdgeInsets.only(left: 8.0),
+                  child: Icon(Icons.block, color: Colors.red),
+                ),
             ],
           ),
+          ),
         ),
-      ),
       ),
     );
   }

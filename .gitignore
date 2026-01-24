@@ -135,3 +135,4 @@ devtools_options.yaml
 
 # Claude settings
 .claude/
+GEMINI.md
