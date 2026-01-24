@@ -1,132 +1,110 @@
-# BE-Flutter - Gestionnaire d'expériences
+# BE-Flutter 🧠
 
-Application Flutter convertie depuis Qt/C++ pour gérer vos expériences professionnelles.
+> **Mood & Habit Tracker Personnel**
 
-## Description
+BE-Flutter est une application de suivi personnel conçue pour vous aider à tenir vos engagements et surveiller votre bien-être mental. 
 
-Cette application vous permet de :
-- Créer et gérer des expériences professionnelles
-- Noter vos journées de travail (échelle 1-5)
-- Suivre le respect du contrat
-- Visualiser les statistiques de vos expériences
+Elle repose sur le concept d'**"Expérience"** : une période dédiée à un objectif précis, un changement d'habitude ou un défi personnel (exemple : *"Arrêter les réseaux sociaux"*, *"Mois sans sucre"*, *"Méditation quotidienne"*).
 
-## Architecture
+---
 
-### Structure du projet
+## 🎯 Concept
 
-```
-lib/
-├── models/           # Modèles de données
-│   ├── day.dart
-│   ├── experience.dart
-│   └── *.g.dart     # Fichiers générés (JSON serialization)
-├── providers/        # State management (Riverpod)
-│   └── experience_provider.dart
-├── repositories/     # Couche de persistance
-│   └── experience_repository.dart
-├── pages/           # Pages de l'application
-│   ├── home_page.dart
-│   └── experience_detail_page.dart
-├── widgets/         # Widgets réutilisables
-│   ├── experience_card.dart
-│   └── add_experience_form.dart
-└── main.dart        # Point d'entrée
-```
+L'application utilise une terminologie spécifique pour ludifier et structurer votre développement personnel :
 
-### Technologies utilisées
+- **L'Expérience** : C'est votre objectif ou le défi que vous vous lancez. Elle agit comme un conteneur pour votre suivi.
+- **Le Contrat** : C'est la règle du jeu que vous fixez pour cette expérience (ex: "Ne pas ouvrir Instagram de la journée").
+- **Le Suivi Journalier** : Chaque jour, vous évaluez votre réussite.
 
-- **Flutter** : Framework UI multiplateforme
-- **Riverpod** : State management
-- **shared_preferences** : Persistance locale des données
-- **json_serializable** : Sérialisation JSON automatique
-- **intl** : Formatage des dates
+---
 
-## Installation
+## 🚀 Fonctionnalités
+
+### 1. Gestion des Objectifs (Expériences)
+- **Création** : Définissez un nouveau défi (ex: "Détox Dopamine").
+- **Suivi Long Terme** : Gardez l'historique de tous vos défis passés et actuels.
+- **Gestion** : Modifiez ou supprimez des suivis selon l'évolution de vos besoins.
+
+### 2. Journal de Bord Quotidien
+Pour chaque expérience active, notez quotidiennement vos résultats :
+- **Notation (Mood)** : Notez votre humeur ou votre ressenti global de la journée (1 à 5).
+- **Validation du Contrat** : Cochez simplement si vous avez tenu votre engagement (Oui/Non).
+- **Calendrier** : Visualisez vos jours réussis et vos jours "sans".
+
+### 3. Analyse de Progression
+- **Score Moyen** : Suivez la moyenne de votre humeur/réussite sur la durée de l'expérience.
+- **Vue Détaillée** : Analysez la corrélation entre le respect de votre contrat et votre humeur générale.
+- **Graphiques** : Visualisation de la courbe de progression ( *En cours d'implémentation* ).
+
+### 4. Persistance & Confidentialité
+- Vos données sont stockées localement sur votre machine. Rien n'est envoyé dans le cloud.
+
+---
+
+## 🛠 Stack Technique
+
+Application convertie depuis Qt/C++ vers l'écosystème Flutter moderne :
+
+| Catégorie | Technologie | Usage |
+|-----------|-------------|-------|
+| **Framework** | [Flutter](https://flutter.dev) | UI Multiplateforme (Windows focus) |
+| **Langage** | Dart 3 | Logique métier |
+| **State Management** | [Riverpod](https://riverpod.dev) | Gestion d'état réactive |
+| **Persistance** | [Shared Preferences](https://pub.dev/packages/shared_preferences) | Stockage local des données |
+| **Sérialisation** | [Json Serializable](https://pub.dev/packages/json_serializable) | Conversion automatique JSON <-> Objets |
+
+---
+
+## 💻 Guide d'Installation
 
 ### Prérequis
+- **Flutter SDK**
+- **Dart SDK**
 
-- Flutter SDK (>=3.0.0)
-- Dart SDK
-- Un éditeur (VS Code, Android Studio, etc.)
+### Démarrage Rapide
 
-### Étapes
+1. **Cloner et installer**
+   ```bash
+   git clone https://github.com/votre-username/BE-Flutter.git
+   cd BE-Flutter
+   flutter pub get
+   ```
 
-1. Cloner le repository
-```bash
-cd BE-Flutter
+2. **Générer le code**
+   Indispensable pour la sérialisation des modèles JSON.
+   ```bash
+   dart run build_runner build --delete-conflicting-outputs
+   ```
+
+3. **Lancer**
+   ```bash
+   flutter run -d windows
+   ```
+
+---
+
+## 🔧 Développement
+
+### Architecture
+
+```text
+lib/
+├── models/           # Données (Experience = Défi, Day = Entrée journalière)
+├── providers/        # Logique (ExperienceProvider)
+├── repositories/     # Sauvegarde
+├── pages/            # Ecrans (Accueil, Détail du défi)
+└── widgets/          # Composants graphiques
 ```
 
-2. Installer les dépendances
-```bash
-flutter pub get
-```
+### Commandes utiles
 
-3. Générer les fichiers de sérialisation (si nécessaire)
-```bash
-flutter pub run build_runner build --delete-conflicting-outputs
-```
+- **Mode Watch (Dev)** : Régénération automatique des modèles pendant que vous codez.
+  ```bash
+  dart run build_runner watch --delete-conflicting-outputs
+  ```
 
-4. Lancer l'application
-```bash
-flutter run
-```
+---
 
-## Utilisation
+## 📝 Note de l'auteur
 
-### Page principale
-
-- Affiche la liste de toutes vos expériences
-- Bouton "Créer une expérience" pour ajouter une nouvelle expérience
-- Pour chaque expérience :
-  - Bouton ✍️ pour modifier le titre
-  - Bouton "Supprimer" pour supprimer l'expérience
-  - Bouton "Voir" pour accéder aux détails
-
-### Page de détail
-
-- Affichage des informations complètes de l'expérience
-- Formulaire pour noter vos journées :
-  - Sélection de la date
-  - Note de 1 à 5 étoiles
-  - Checkbox "Contrat respecté"
-- Bouton "Terminer l'expérience" pour afficher la moyenne
-
-## Fonctionnalités
-
-- ✅ Création d'expériences
-- ✅ Modification du titre et des dates
-- ✅ Suppression d'expériences
-- ✅ Notation des journées
-- ✅ Calcul de la moyenne des notes
-- ✅ Persistance locale des données
-- ⏳ Graphiques (à implémenter avec fl_chart)
-
-## Développement
-
-### Générer les fichiers de sérialisation
-
-Après modification des modèles, exécutez :
-
-```bash
-flutter pub run build_runner build --delete-conflicting-outputs
-```
-
-### Configuration VS Code
-
-Le projet inclut des paramètres VS Code (`.vscode/settings.json`) qui masquent automatiquement :
-- Les fichiers de build et cache (`.dart_tool`, `build/`)
-- Les fichiers IDE (`.idea/`, `*.iml`)
-- Les fichiers temporaires (`tmpclaude-*`, `.tmp/`)
-- Les métadonnées (`.metadata`, `devtools_options.yaml`)
-
-### Structure des dossiers ignorés
-
-- `.tmp/` - Fichiers temporaires (ignoré par Git et masqué dans VS Code)
-- `.dart_tool/` - Cache Dart/Flutter
-- `build/` - Fichiers compilés
-
-### Tests
-
-```bash
-flutter test
-```
+Ce projet est une réécriture d'un outil personnel visant à quantifier l'impact des habitudes sur le moral quotidien.
