@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
-import '../../providers/experience_provider.dart';
 import '../add_experience_form.dart';
 
-class ExperienceListHeader extends ConsumerWidget {
+class ExperienceListHeader extends StatelessWidget {
   const ExperienceListHeader({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Text(
           'Experiences',
-          style: GoogleFonts.dosis(
+          style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w700,
             color: Colors.black.withValues(alpha: 0.4),

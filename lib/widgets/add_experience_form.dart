@@ -16,6 +16,8 @@ class AddExperienceForm extends ConsumerStatefulWidget {
 }
 
 class _AddExperienceFormState extends ConsumerState<AddExperienceForm> {
+  static final DateFormat _dateFormat = DateFormat('dd/MM/yyyy');
+
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _contractController = TextEditingController();
@@ -32,7 +34,6 @@ class _AddExperienceFormState extends ConsumerState<AddExperienceForm> {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat('dd/MM/yyyy');
     const labelWidth = 80.0;
     const borderColor = Color.fromRGBO(105, 82, 164, 1.0);
     const buttonColor = Color.fromRGBO(224, 221, 246, 1.0);
@@ -110,7 +111,7 @@ class _AddExperienceFormState extends ConsumerState<AddExperienceForm> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(dateFormat.format(_startDate)),
+                          Text(_dateFormat.format(_startDate)),
                           const Icon(Icons.calendar_today, size: 16),
                         ],
                       ),
@@ -143,7 +144,7 @@ class _AddExperienceFormState extends ConsumerState<AddExperienceForm> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(dateFormat.format(_endDate)),
+                          Text(_dateFormat.format(_endDate)),
                           const Icon(Icons.calendar_today, size: 16),
                         ],
                       ),

@@ -26,103 +26,137 @@ class _ExperienceDetailViewState extends ConsumerState<ExperienceDetailView> {
 
   @override
   Widget build(BuildContext context) {
-    final experience = ref
-        .watch(experienceProvider.notifier)
-        .getExperience(widget.experienceIndex);
+    final experiences = ref.watch(experienceProvider);
 
-    if (experience == null) {
+    if (widget.experienceIndex < 0 || widget.experienceIndex >= experiences.length) {
       return const Center(
         child: Text('Expérience non trouvée'),
       );
     }
 
-    return Column(
-      children: [
-        // En-tête personnalisé (simulant une AppBar)
-        ExperienceHeader(experience: experience),
+    final experience = experiences[widget.experienceIndex];
 
-        // Contenu scrollable
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const Expanded(
-                child: ExperienceGraph(),
-              ),
-              MouseRegion(
-                cursor: SystemMouseCursors.resizeRow,
-                child: GestureDetector(
-                  onVerticalDragUpdate: (details) {
-                    setState(() {
-                      _bottomPanelHeight -= details.delta.dy;
-                      if (_bottomPanelHeight < 240) _bottomPanelHeight = 240;
-                    });
-                  },
-                  child: Container(
-                    height: 5,
-                    color: const Color.fromRGBO(213, 213, 218, 1.0),
-                    alignment: Alignment.center,
-                    child: Container(
-                      height: 1,
-                      color: const Color.fromARGB(255, 167, 167, 167),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        const minBottomPanelHeight = 240.0;
+        const minLeftPanelWidth = 280.0;
+        const minRightPanelWidth = 200.0;
+
+        final maxBottomPanelHeight = (constraints.maxHeight - 100).clamp(minBottomPanelHeight, constraints.maxHeight * 0.8);
+        final maxLeftPanelWidth = (constraints.maxWidth - minRightPanelWidth).clamp(minLeftPanelWidth, constraints.maxWidth * 0.6);
+
+        if (_bottomPanelHeight > maxBottomPanelHeight) {
+          _bottomPanelHeight = maxBottomPanelHeight;
+        }
+        if (_bottomPanelHeight < minBottomPanelHeight) {
+          _bottomPanelHeight = minBottomPanelHeight;
+        }
+        if (_leftPanelWidth > maxLeftPanelWidth) {
+          _leftPanelWidth = maxLeftPanelWidth;
+        }
+        if (_leftPanelWidth < minLeftPanelWidth) {
+          _leftPanelWidth = minLeftPanelWidth;
+        }
+
+        final effectiveLeftPanelWidth = _leftPanelWidth.clamp(minLeftPanelWidth, maxLeftPanelWidth);
+
+        return Column(
+          children: [
+            // En-tête personnalisé (simulant une AppBar)
+            ExperienceHeader(experience: experience),
+
+            // Contenu scrollable
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Expanded(
+                    child: ExperienceGraph(),
+                  ),
+                  MouseRegion(
+                    cursor: SystemMouseCursors.resizeRow,
+                    child: GestureDetector(
+                      onVerticalDragUpdate: (details) {
+                        setState(() {
+                          _bottomPanelHeight -= details.delta.dy;
+                          if (_bottomPanelHeight < minBottomPanelHeight) {
+                            _bottomPanelHeight = minBottomPanelHeight;
+                          }
+                          if (_bottomPanelHeight > maxBottomPanelHeight) {
+                            _bottomPanelHeight = maxBottomPanelHeight;
+                          }
+                        });
+                      },
+                      child: Container(
+                        height: 5,
+                        color: const Color.fromRGBO(213, 213, 218, 1.0),
+                        alignment: Alignment.center,
+                        child: Container(
+                          height: 1,
+                          color: const Color.fromARGB(255, 167, 167, 167),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              SizedBox(
-                  height: _bottomPanelHeight,
-                  child: Container(
-                    color: const Color.fromRGBO(206, 206, 211, 1.0),
-                    child: Row(
-                      children: [
-                        DayListPanel(
-                          width: _leftPanelWidth,
-                          experience: experience,
-                          experienceIndex: widget.experienceIndex,
-                          onDaySelected: (index) {
-                            setState(() {
-                              _dayIndex = index;
-                            });
-                          },
-                        ),
-                        MouseRegion(
-                          cursor: SystemMouseCursors.resizeColumn,
-                          child: GestureDetector(
-                            onHorizontalDragUpdate: (details) {
-                              setState(() {
-                                _leftPanelWidth += details.delta.dx;
-                                if (_leftPanelWidth < 360) {
-                                  _leftPanelWidth = 360;
-                                }
-                              });
-                            },
-                            child: Container(
-                              width: 5,
-                              color: const Color.fromRGBO(213, 213, 218, 1.0),
-                              alignment: Alignment.center,
-                              child: Container(
-                                width: 1,
-                                color: const Color.fromARGB(255, 175, 175, 175),
+                  SizedBox(
+                      height: _bottomPanelHeight,
+                      child: Container(
+                        color: const Color.fromRGBO(206, 206, 211, 1.0),
+                        child: Row(
+                          children: [
+                            DayListPanel(
+                              width: effectiveLeftPanelWidth,
+                              experience: experience,
+                              experienceIndex: widget.experienceIndex,
+                              onDaySelected: (index) {
+                                setState(() {
+                                  _dayIndex = index;
+                                });
+                              },
+                            ),
+                            MouseRegion(
+                              cursor: SystemMouseCursors.resizeColumn,
+                              child: GestureDetector(
+                                onHorizontalDragUpdate: (details) {
+                                  setState(() {
+                                    _leftPanelWidth += details.delta.dx;
+                                    if (_leftPanelWidth < minLeftPanelWidth) {
+                                      _leftPanelWidth = minLeftPanelWidth;
+                                    }
+                                    if (_leftPanelWidth > maxLeftPanelWidth) {
+                                      _leftPanelWidth = maxLeftPanelWidth;
+                                    }
+                                  });
+                                },
+                                child: Container(
+                                  width: 5,
+                                  color: const Color.fromRGBO(213, 213, 218, 1.0),
+                                  alignment: Alignment.center,
+                                  child: Container(
+                                    width: 1,
+                                    color: const Color.fromARGB(255, 175, 175, 175),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                            Expanded(
+                              child: _dayIndex == null
+                                  ? const SizedBox()
+                                  : DayDetailPanel(
+                                      dayIndex: _dayIndex!,
+                                      experience: experience,
+                                      experienceIndex: widget.experienceIndex,
+                                    ),
+                            ),
+                          ],
                         ),
-                        Expanded(
-                          child: _dayIndex == null
-                              ? const SizedBox()
-                              : DayDetailPanel(
-                                  dayIndex: _dayIndex!,
-                                  experience: experience,
-                                  experienceIndex: widget.experienceIndex,
-                                ),
-                        ),
-                      ],
-                    ),
-                  ))
-            ],
-          ),
-        ),
-      ],
+                      ))
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

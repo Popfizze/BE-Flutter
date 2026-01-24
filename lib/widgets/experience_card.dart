@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import '../models/experience.dart';
 
 class ExperienceCard extends StatelessWidget {
+  static final DateFormat _dateFormat = DateFormat('d MMM', 'fr_FR');
+
   final int index;
   final Experience experience;
   final VoidCallback onView;
@@ -20,7 +22,6 @@ class ExperienceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat('d MMM', 'fr_FR');
 
     return Container(
       decoration: BoxDecoration(
@@ -89,7 +90,7 @@ class ExperienceCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${dateFormat.format(experience.startDate)} - ${dateFormat.format(experience.endDate)}',
+                      '${_dateFormat.format(experience.startDate)} - ${_dateFormat.format(experience.endDate)}',
                       style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                     ),
                   ],
