@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/experience.dart';
 import '../models/day.dart';
@@ -23,7 +24,7 @@ class ExperienceNotifier extends StateNotifier<List<Experience>> {
       state = experiences;
     } catch (e) {
       // Handle error - could use error state or logging
-      print('Error loading experiences: $e');
+      debugPrint('Error loading experiences: $e');
     }
   }
 
@@ -32,7 +33,7 @@ class ExperienceNotifier extends StateNotifier<List<Experience>> {
     try {
       await _repository.saveExperiences(state);
     } catch (e) {
-      print('Error saving experiences: $e');
+      debugPrint('Error saving experiences: $e');
     }
   }
 

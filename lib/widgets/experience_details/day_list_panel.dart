@@ -116,6 +116,7 @@ class DayListPanel extends ConsumerWidget {
                         itemBuilder: (context, index) {
                           final day = experience.days[index];
                           return Padding(
+                            key: ValueKey('day_$index'),
                             padding: const EdgeInsets.only(bottom: 16),
                             child: DayCard(
                               index: index,

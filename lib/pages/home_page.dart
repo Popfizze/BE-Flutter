@@ -22,77 +22,98 @@ class _HomePageState extends ConsumerState<HomePage> {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(144, 146, 170, 1.0),
       body: SafeArea(
-        child: Container(
-            padding: const EdgeInsets.only(top: 10, left: 25),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SizedBox(
-                      width: _leftPanelWidth,
-                      child: Container(
-                        color: const Color.fromRGBO(206, 206, 211, 1.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const ExperienceListHeader(
-                              key: Key('headerExperienceList'),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            const minLeftPanelWidth = 220.0;
+            const minRightPanelWidth = 450.0;
+            final availableWidth = constraints.maxWidth - 25; // padding left
+            final maxLeftPanelWidth = (availableWidth - minRightPanelWidth).clamp(minLeftPanelWidth, availableWidth * 0.4);
+
+            if (_leftPanelWidth > maxLeftPanelWidth) {
+              _leftPanelWidth = maxLeftPanelWidth;
+            }
+            if (_leftPanelWidth < minLeftPanelWidth) {
+              _leftPanelWidth = minLeftPanelWidth;
+            }
+
+            return Container(
+                padding: const EdgeInsets.only(top: 10, left: 25),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      SizedBox(
+                          width: _leftPanelWidth,
+                          child: Container(
+                            color: const Color.fromRGBO(206, 206, 211, 1.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const ExperienceListHeader(
+                                  key: Key('headerExperienceList'),
+                                ),
+                                const SizedBox(height: 15),
+                                Expanded(
+                                  key: const Key('experienceList'),
+                                  child: ExperienceListView(
+                                    onSelect: (index) {
+                                      setState(() {
+                                        _selectedExperienceIndex = index;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 15),
-                            Expanded(
-                              key: const Key('experienceList'),
-                              child: ExperienceListView(
-                                onSelect: (index) {
-                                  setState(() {
-                                    _selectedExperienceIndex = index;
-                                  });
-                                },
-                              ),
+                          )),
+                      MouseRegion(
+                        cursor: SystemMouseCursors.resizeColumn,
+                        child: GestureDetector(
+                          onHorizontalDragUpdate: (details) {
+                            setState(() {
+                              _leftPanelWidth += details.delta.dx;
+                              if (_leftPanelWidth < minLeftPanelWidth) {
+                                _leftPanelWidth = minLeftPanelWidth;
+                              }
+                              if (_leftPanelWidth > maxLeftPanelWidth) {
+                                _leftPanelWidth = maxLeftPanelWidth;
+                              }
+                            });
+                          },
+                          child: Container(
+                            width: 5,
+                            color: const Color.fromRGBO(206, 206, 211, 1.0),
+                            alignment: Alignment.center,
+                            child: Container(
+                              width: 1,
+                              color: const Color.fromRGBO(206, 206, 211, 1.0),
                             ),
-                          ],
-                        ),
-                      )),
-                  MouseRegion(
-                    cursor: SystemMouseCursors.resizeColumn,
-                    child: GestureDetector(
-                      onHorizontalDragUpdate: (details) {
-                        setState(() {
-                          _leftPanelWidth += details.delta.dx;
-                          if (_leftPanelWidth < 220) _leftPanelWidth = 220;
-                        });
-                      },
-                      child: Container(
-                        width: 5,
-                        color: const Color.fromRGBO(206, 206, 211, 1.0),
-                        alignment: Alignment.center,
-                        child: Container(
-                          width: 1,
-                          color: const Color.fromRGBO(206, 206, 211, 1.0),
+                          ),
                         ),
                       ),
-                    ),
+                      Expanded(
+                        child: Container(
+                          color: const Color.fromRGBO(213, 213, 218, 1.0),
+                          child: _selectedExperienceIndex != null
+                              ? ExperienceDetailView(
+                                  experienceIndex: _selectedExperienceIndex!,
+                                  // Force rebuild when selection changes
+                                  key: ValueKey(_selectedExperienceIndex),
+                                )
+                              : const Center(
+                                  child: Text(
+                                    '',
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                ),
+                        ),
+                      )
+                    ],
                   ),
-                  Expanded(
-                    child: Container(
-                      color: const Color.fromRGBO(213, 213, 218, 1.0),
-                      child: _selectedExperienceIndex != null
-                          ? ExperienceDetailView(
-                              experienceIndex: _selectedExperienceIndex!,
-                              // Force rebuild when selection changes
-                              key: ValueKey(_selectedExperienceIndex),
-                            )
-                          : const Center(
-                              child: Text(
-                                '',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ),
-                    ),
-                  )
-                ],
-              ),
-            )),
+                ));
+          },
+        ),
       ),
     );
   }

@@ -3,13 +3,14 @@ import 'package:intl/intl.dart';
 import '../../models/experience.dart';
 
 class ExperienceHeader extends StatelessWidget {
+  static final DateFormat _dateFormat = DateFormat('dd/MM');
+
   final Experience experience;
 
   const ExperienceHeader({super.key, required this.experience});
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat('dd/MM');
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -27,7 +28,7 @@ class ExperienceHeader extends StatelessWidget {
               ),
               const SizedBox(width: 20),
               Text(
-                '${dateFormat.format(experience.startDate)} - ${dateFormat.format(experience.endDate)}',
+                '${_dateFormat.format(experience.startDate)} - ${_dateFormat.format(experience.endDate)}',
                 style: const TextStyle(
                   fontSize: 17,
                   color: Color.fromRGBO(173, 172, 176, 1.0),

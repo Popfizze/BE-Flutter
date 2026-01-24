@@ -27,6 +27,7 @@ class ExperienceListView extends ConsumerWidget {
       itemBuilder: (context, index) {
         final experience = experiences[index];
         return Padding(
+          key: ValueKey('experience_$index'),
           padding: const EdgeInsets.only(bottom: 16),
           child: ExperienceCard(
             index: index,

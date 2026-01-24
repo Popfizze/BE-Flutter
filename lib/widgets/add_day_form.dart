@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../models/ratings_labels.dart';
 import '../providers/experience_provider.dart';
 
 class AddDayForm extends ConsumerStatefulWidget {
@@ -14,19 +15,6 @@ class AddDayForm extends ConsumerStatefulWidget {
 
   @override
   ConsumerState<AddDayForm> createState() => _AddDayFormState();
-}
-
-enum RatingsLabels {
-  tresMauvaise('Très mauvaise', 1),
-  mauvaise('Mauvaise', 2),
-  neutre('Neutre', 3),
-  bonne('Bonne', 4),
-  tresBonne('Très bonne', 5);
-
-  final String label;
-  final int value;
-
-  const RatingsLabels(this.label, this.value);
 }
 
 class _AddDayFormState extends ConsumerState<AddDayForm> {
@@ -64,7 +52,7 @@ class _AddDayFormState extends ConsumerState<AddDayForm> {
                   const SizedBox(width: 16),
                   Expanded(
                     child: DropdownButtonFormField<RatingsLabels>(
-                      value: _dayRating,
+                      initialValue: _dayRating,
                       decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(15),
@@ -156,8 +144,6 @@ class _AddDayFormState extends ConsumerState<AddDayForm> {
           ),
         ));
   }
-
-  void title() {}
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {

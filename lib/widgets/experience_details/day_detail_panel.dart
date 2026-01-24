@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -5,6 +7,8 @@ import '../../models/experience.dart';
 import '../../providers/experience_provider.dart';
 
 class DayDetailPanel extends ConsumerStatefulWidget {
+  static final DateFormat _dateFormat = DateFormat('d MMMM y', 'fr_FR');
+
   final int dayIndex;
   final Experience experience;
   final int experienceIndex;
@@ -22,6 +26,7 @@ class DayDetailPanel extends ConsumerStatefulWidget {
 
 class _DayDetailPanelState extends ConsumerState<DayDetailPanel> {
   late TextEditingController _noteController;
+  Timer? _debounceTimer;
 
   @override
   void initState() {
@@ -40,24 +45,27 @@ class _DayDetailPanelState extends ConsumerState<DayDetailPanel> {
 
   @override
   void dispose() {
+    _debounceTimer?.cancel();
     _noteController.dispose();
     super.dispose();
   }
 
   void _onNoteChanged(String value) {
-    final day = widget.experience.days[widget.dayIndex];
-    ref.read(experienceProvider.notifier).updateDay(
-          experienceIndex: widget.experienceIndex,
-          dayIndex: widget.dayIndex,
-          rating: day.rating,
-          note: value,
-          contractRespected: day.contractRespected,
-        );
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+      final day = widget.experience.days[widget.dayIndex];
+      ref.read(experienceProvider.notifier).updateDay(
+            experienceIndex: widget.experienceIndex,
+            dayIndex: widget.dayIndex,
+            rating: day.rating,
+            note: value,
+            contractRespected: day.contractRespected,
+          );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final dateFormat = DateFormat('d MMMM y', 'fr_FR');
     final day = widget.experience.days[widget.dayIndex];
 
     return Container(
@@ -73,7 +81,7 @@ class _DayDetailPanelState extends ConsumerState<DayDetailPanel> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  dateFormat.format(day.getDate()),
+                  DayDetailPanel._dateFormat.format(day.getDate()),
                   style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                 ),
                 Text(
