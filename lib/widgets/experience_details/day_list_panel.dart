@@ -100,16 +100,7 @@ class DayListPanel extends ConsumerWidget {
             Expanded(
               child: Container(
                 child: experience.days.isEmpty
-                    ? const Center(
-                        child: Text(
-                          'Aucun jours',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Color.fromARGB(255, 156, 63, 63),
-                          ),
-                        ),
-                      )
+                    ? const SizedBox()
                     : ListView.builder(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         itemCount: experience.days.length,

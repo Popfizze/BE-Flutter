@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import '../models/ratings_labels.dart';
 import '../providers/experience_provider.dart';
 
@@ -22,6 +23,54 @@ class _AddDayFormState extends ConsumerState<AddDayForm> {
 
   RatingsLabels _dayRating = RatingsLabels.neutre;
   bool _contractRespected = false;
+  late DateTime _selectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialisation de la date par défaut
+    // On doit le faire dans un post-frame callback ou ici en lisant directement le provider
+    // Attention: initState ne peut pas lire le provider avec watch, mais read est ok dans initState si on ne s'abonne pas, 
+    // ou mieux: on initialise à now() et on corrige dans didChangeDependencies si besoin, 
+    // mais ici on va faire simple: initialiser à now(). La validation des bornes se fera à l'ouverture du picker.
+    _selectedDate = DateTime.now();
+  }
+  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Ajustement initial pour être sûr d'être dans les bornes
+    final experiences = ref.read(experienceProvider);
+    if (widget.experienceIndex >= 0 && widget.experienceIndex < experiences.length) {
+      final experience = experiences[widget.experienceIndex];
+      if (_selectedDate.isBefore(experience.startDate)) {
+        _selectedDate = experience.startDate;
+      } else if (_selectedDate.isAfter(experience.endDate)) {
+        _selectedDate = experience.endDate;
+      }
+    }
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final experiences = ref.read(experienceProvider);
+    if (widget.experienceIndex < 0 || widget.experienceIndex >= experiences.length) return;
+    
+    final experience = experiences[widget.experienceIndex];
+    
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: experience.startDate,
+      lastDate: experience.endDate,
+      locale: const Locale("fr", "FR"), // Optionnel: force français si config ok
+    );
+    
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -41,6 +90,44 @@ class _AddDayFormState extends ConsumerState<AddDayForm> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+               // Date Selection
+              Row(
+                children: [
+                  const SizedBox(
+                    width: labelWidth,
+                    child: Text('Date',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () => _selectDate(context),
+                      borderRadius: BorderRadius.circular(15),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 12),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: borderColor),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              DateFormat('dd/MM/yyyy').format(_selectedDate),
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                            const Icon(Icons.calendar_today, 
+                                size: 20, color: borderColor),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
               // Note
               Row(
                 children: [
@@ -147,15 +234,25 @@ class _AddDayFormState extends ConsumerState<AddDayForm> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      ref.read(experienceProvider.notifier).rateExperienceDay(
-            experienceIndex: widget.experienceIndex,
-            rating: _dayRating.value,
-            date: DateTime.now(),
-            note: ' ',
-            contractRespected: _contractRespected,
-          );
+      try {
+        ref.read(experienceProvider.notifier).rateExperienceDay(
+              experienceIndex: widget.experienceIndex,
+              rating: _dayRating.value,
+              date: _selectedDate,
+              note: ' ',
+              contractRespected: _contractRespected,
+            );
 
-      widget.onSubmit();
+        widget.onSubmit();
+      } catch (e) {
+        // Afficher l'erreur si la date existe déjà
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString().replaceAll("Exception: ", "")),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 }

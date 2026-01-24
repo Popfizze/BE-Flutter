@@ -36,6 +36,23 @@ class _ExperienceDetailViewState extends ConsumerState<ExperienceDetailView> {
 
     final experience = experiences[widget.experienceIndex];
 
+    // Vérification de sécurité pour l'index du jour sélectionné
+    if (_dayIndex != null && _dayIndex! >= experience.days.length) {
+       // On corrige l'état après la frame pour ne pas casser le build
+       WidgetsBinding.instance.addPostFrameCallback((_) {
+         if (mounted) {
+           setState(() {
+             _dayIndex = null;
+           });
+         }
+       });
+    }
+
+    // Variable locale pour l'affichage sécurisé
+    final int? safeDayIndex = (_dayIndex != null && _dayIndex! < experience.days.length) 
+        ? _dayIndex 
+        : null;
+
     return LayoutBuilder(
       builder: (context, constraints) {
         const minBottomPanelHeight = 240.0;
@@ -70,8 +87,12 @@ class _ExperienceDetailViewState extends ConsumerState<ExperienceDetailView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Expanded(
-                    child: ExperienceGraph(),
+                  Expanded(
+                    child: ExperienceGraph(
+                      days: experience.days,
+                      startDate: experience.startDate,
+                      endDate: experience.endDate,
+                    ),
                   ),
                   MouseRegion(
                     cursor: SystemMouseCursors.resizeRow,
@@ -140,10 +161,10 @@ class _ExperienceDetailViewState extends ConsumerState<ExperienceDetailView> {
                               ),
                             ),
                             Expanded(
-                              child: _dayIndex == null
+                              child: safeDayIndex == null
                                   ? const SizedBox()
                                   : DayDetailPanel(
-                                      dayIndex: _dayIndex!,
+                                      dayIndex: safeDayIndex,
                                       experience: experience,
                                       experienceIndex: widget.experienceIndex,
                                     ),

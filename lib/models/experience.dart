@@ -45,13 +45,29 @@ class Experience {
 
   // Rate a day
   void rateDay(int rating, DateTime today, String note, bool contractRespected) {
+    // Vérifier si la date existe déjà (normalisation à minuit pour comparaison)
+    final dateToCheck = DateTime(today.year, today.month, today.day);
+    
+    final exists = days.any((day) {
+      final existingDate = DateTime(day.date.year, day.date.month, day.date.day);
+      return existingDate.isAtSameMomentAs(dateToCheck);
+    });
+
+    if (exists) {
+      throw Exception("Cette date a déjà été notée.");
+    }
+
     final newDay = Day(
       rating: rating,
       date: today,
       note: note,
       contractRespected: contractRespected,
     );
+    
     days.add(newDay);
+    
+    // Trier les jours par date croissante
+    days.sort((a, b) => a.date.compareTo(b.date));
   }
 
   // Calculate duration in days
